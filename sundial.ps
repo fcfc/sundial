@@ -1,0 +1,198 @@
+%!PS-Adobe-2.0
+%%DocumentFonts: Helvetica Helvetica-Bold Times-Roman Times-Bold
+%%Title: Sundial
+%%Pages: 2
+%%EndComments
+
+/Helvetica findfont 36 scalefont setfont
+
+% Name of location
+% San Francisco, California
+% --------------------------
+
+
+/latitude 	37.75 def
+
+/sinl {latitude sin} def
+
+% -------------------------
+% formula   tan D = (tan t) (sin l)
+% -------------------------
+.5 setlinewidth
+
+1 1 scale
+
+10 20 moveto
+(San Francisco  Latitude 37 45') true charpath stroke
+0 0 moveto
+
+/Helvetica findfont 18 scalefont setfont
+% -----------------------
+% Shift origin to center of page
+% ------------------------------
+306 150 translate
+
+% ---------------
+% Draw noon line
+% ---------------
+0 0 moveto
+0 500 lineto stroke
+
+0 0 moveto
+
+% -----------------------------
+% main drawing routine. Calculates angle = atan[(tan t) (sin l)]
+% and graphs positive and negative angles
+% ---------------------------------
+/drawline {
+    /a timeangle sin def
+    /b timeangle cos def
+    /tantime a b div def
+    /product sinl tantime mul def
+    /realangle product 1 atan def
+ gsave
+   realangle rotate
+   startline linelen lineto stroke
+ grestore
+ gsave
+   realangle neg rotate
+   startline linelen lineto stroke
+ grestore
+} def
+
+% Make Hour Marks
+/timeangle 15 def
+/linelen 505 def
+/startline 0 def
+drawline
+
+/linelen 530 def
+/timeangle 30 def
+drawline
+
+/linelen 536 def
+/timeangle 45 def
+drawline
+
+/linelen 384 def
+/timeangle 60 def
+drawline
+
+/linelen 305 def
+/timeangle 75 def
+drawline
+
+% -----------------
+% Make half Hour Marks
+% ------------------
+/drawtick {
+   /a timeangle sin def
+   /b timeangle cos def
+   /tantime a b div def
+   /product sinl tantime mul def
+   /realangle product 1 atan def
+gsave
+  realangle rotate
+  0 200 moveto
+  o linelen rlineto stroke
+grestore
+gsave
+  realangle neg rotate
+  0 200 moveto
+  0 linelen rlineto stroke
+grestore
+} def
+
+% ---------------------
+% draw 30 minute ticks
+% ---------------------
+/linelen 8 def
+/timeangle 7.5 def
+
+6 {
+drawtick
+/timeangle timeangle 15 add def
+} repeat
+
+% ---------------------
+% draw 15 minute ticks
+% ---------------------
+/linelen 4 def
+/timeangle 3.75 def
+
+12 {
+drawtick
+/timeangle timeangle 7.5 add def
+} repeat
+
+% -----------------------------------------------
+% Draw bounding box. Make clip region out of this
+% -----------------------------------------------
+/box  {
+      1 index 0 rlineto
+      0 exch rlineto
+      neg 0 rlineto
+      closepath
+} bind def
+
+% -----------------------------------------------
+% draw a box and use it as
+% -----------------------------------------------
+-280 0 moveto
+560 500 box stroke  
+% Note we don't say "stroke" or "fill" so this box path is still
+% available to the "clip" command
+
+% Try this with and without the comment: it will toggle clipping
+% against the current path, which is the box.
+% clip
+
+0 0 moveto
+0 0 200 0 180 arc stroke
+
+% Polar conversion (takes args (r, th) and leaves (x, y))
+/getxy {dup 3 -1 roll dup 4 1 roll exch cos mul 3 1 roll sin mul} bind def
+
+% create a string with contents "6"
+/mystring (6) def
+
+/radius 260 def
+/theta 0 def
+radius theta getxy moveto
+2 0 rmoveto
+
+mystring show
+
+/theta 180 def
+radius theta getxy moveto
+2 0 rmoveto
+
+mystring show
+
+% ---------------- %
+% write the string %
+% ---------------- %
+/mystring (12) def
+/theta 90 def
+radius theta getxy moveto
+
+-10 0 rmoveto
+mystring show
+% ------------------
+/mystring (1) def
+/theta 80 def
+radius theta getxy moveto
+
+-10 0 rmoveto
+mystring show
+% ------------------
+/mystring (11) def
+/theta 100 def
+radius theta getxy moveto
+
+-10 0 rmoveto
+mystring show
+
+
+
+showpage
